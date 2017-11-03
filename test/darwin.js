@@ -17,7 +17,7 @@ function otherDir(a, b, options) {
   return increment(a, b, options);
 }
 
-describe('increment-filename', function() {
+describe('darwin', function() {
   before(function() {
     process.chdir(path.join(__dirname, 'fixtures'));
   });
@@ -42,22 +42,16 @@ describe('increment-filename', function() {
     });
   });
 
-  describe('same directory', function() {
+  describe('increment', function() {
     it('should not increment the filename when it does not exist', function() {
       if (isWindows) return this.skip();
       assert.equal(sameDir('baz.txt'), 'baz.txt');
     });
 
-    it('should add "copy" to the filename when copied to same dir', function() {
+    it('should increment the filename', function() {
       if (isWindows) return this.skip();
-      assert.equal(sameDir('bar.txt'), 'bar copy.txt');
-      assert.equal(sameDir('qux 2.txt'), 'qux 2 copy.txt');
-    });
-  });
-
-  describe('different directory', function() {
-    it('should increment the filename when the file already exists', function() {
-      if (isWindows) return this.skip();
+      assert.equal(sameDir('bar.txt'), 'bar 2.txt');
+      assert.equal(sameDir('qux 2.txt'), 'qux 3.txt');
       assert.equal(otherDir('bar.txt', 'sub/bar.txt'), 'sub/bar 2.txt');
       assert.equal(otherDir('foo.txt', 'sub/foo.txt'), 'sub/foo 2.txt');
       assert.equal(otherDir('foo.txt', 'sub/nested/foo.txt'), 'sub/nested/foo 2.txt');
@@ -73,9 +67,9 @@ describe('increment-filename', function() {
     it('should add "copy" and increment the filename', function() {
       if (isWindows) return this.skip();
       var opts = { stripIncrement: false };
-      assert.equal(sameDir('foo.txt', opts), 'foo copy 7.txt');
+      assert.equal(sameDir('foo.txt', opts), 'foo 3.txt');
+      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 3.txt');
       assert.equal(sameDir('foo copy.txt', opts), 'foo copy 7.txt');
-      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 copy.txt');
     });
   });
 
@@ -84,12 +78,13 @@ describe('increment-filename', function() {
       if (isWindows) return this.skip();
       var opts = {
         increment: function(stem, num) {
-          return stem.replace(/\s\d+$/, '') + ' ' + num;
+          return stem.replace(/\s\d+$/, '') + ' copy ' + num;
         }
       };
+
       assert.equal(sameDir('foo.txt', opts), 'foo copy 7.txt');
+      assert.equal(sameDir('foo 2.txt', opts), 'foo copy 7.txt');
       assert.equal(sameDir('foo copy.txt', opts), 'foo copy 7.txt');
-      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 copy.txt');
     });
   });
 });
