@@ -10,7 +10,7 @@ var File = require('vinyl');
 var increment = require('..');
 
 function sameDir(name, options) {
-  return increment(name, name, options);
+  return increment(name, options);
 }
 
 function otherDir(a, b, options) {
@@ -50,7 +50,7 @@ describe('darwin', function() {
 
     it('should increment the filename', function() {
       if (isWindows) return this.skip();
-      assert.equal(sameDir('bar.txt'), 'bar 2.txt');
+      assert.equal(sameDir('bar.txt'), 'bar copy.txt');
       assert.equal(sameDir('qux 2.txt'), 'qux 3.txt');
       assert.equal(otherDir('bar.txt', 'sub/bar.txt'), 'sub/bar 2.txt');
       assert.equal(otherDir('foo.txt', 'sub/foo.txt'), 'sub/foo 2.txt');
@@ -68,7 +68,7 @@ describe('darwin', function() {
       if (isWindows) return this.skip();
       var opts = { stripIncrement: false };
       assert.equal(sameDir('foo.txt', opts), 'foo 3.txt');
-      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 3.txt');
+      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 copy.txt');
       assert.equal(sameDir('foo copy.txt', opts), 'foo copy 7.txt');
     });
   });

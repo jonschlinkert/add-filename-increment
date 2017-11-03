@@ -52,7 +52,7 @@ describe('windows', function() {
 
     it('should increment the filename', function() {
       if (isWindows) return this.skip();
-      assert.equal(sameDir('bar.txt'), 'bar (2).txt');
+      assert.equal(sameDir('bar.txt'), 'bar - Copy.txt');
       assert.equal(sameDir('qux (2).txt'), 'qux (3).txt');
       assert.equal(otherDir('bar.txt', 'sub/bar.txt'), 'sub/bar (2).txt');
       assert.equal(otherDir('foo.txt', 'sub/foo.txt'), 'sub/foo (2).txt');
@@ -69,9 +69,11 @@ describe('windows', function() {
     it('should increment the filename', function() {
       if (isWindows) return this.skip();
       var opts = { stripIncrement: false };
-      assert.equal(sameDir('foo.txt', opts), 'foo (3).txt');
-      assert.equal(sameDir('foo (2).txt', opts), 'foo (2) (2).txt');
-      assert.equal(sameDir('foo copy.txt', opts), 'foo copy (2).txt');
+      assert.equal(sameDir('abc (2) - Copy.txt', opts), 'abc (3) - Copy.txt');
+      assert.equal(sameDir('abc (2) - Copy - Copy.txt', opts), 'abc (3) - Copy.txt');
+      assert.equal(sameDir('foo.txt', opts), 'foo - Copy.txt');
+      assert.equal(sameDir('foo (2).txt', opts), 'foo (2) - Copy.txt');
+      assert.equal(sameDir('foo copy.txt', opts), 'foo copy - Copy.txt');
     });
   });
 
