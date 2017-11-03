@@ -1,0 +1,47 @@
+{
+  "name": "increment-filename",
+  "description": "Detects if the filepath already exists on the file system and, if necessary, adds a number after the filename using the same pattern as the operating system.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/increment-filename",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/increment-filename",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/increment-filename/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "filename",
+    "increment"
+  ],
+  "devDependencies": {
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "strip-filename-increment": "^1.0.0",
+    "vinyl": "^2.1.0"
+  },
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "lint": {
+      "reflinks": true
+    }
+  }
+}
