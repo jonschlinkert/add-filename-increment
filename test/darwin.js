@@ -1,90 +1,81 @@
 'use strict';
 
-var origCwd = process.cwd();
-
 require('mocha');
-var path = require('path');
-var isWindows = require('is-windows')();
-var assert = require('assert');
-var File = require('vinyl');
-var increment = require('..');
+const path = require('path');
+const assert = require('assert').strict;
+const increment = require('..');
 
-function sameDir(name, options) {
-  return increment(name, options);
-}
+const fixtures = (...args) => {
+  return path.join(__dirname, 'fixtures', ...args).replace(/\\/g, '/');
+};
+const inc = (fp, opts) => {
+  return increment(fixtures(fp), { ...opts, fs: true, platform: 'darwin' });
+};
 
-function otherDir(a, b, options) {
-  return increment(a, b, options);
-}
-
-describe('darwin', function() {
-  before(function() {
-    process.chdir(path.join(__dirname, 'fixtures'));
+describe('darwin', () => {
+  it('should not increment the filename when it does not exist', () => {
+    assert.equal(inc('baz.txt'), fixtures('baz.txt'));
   });
 
-  after(function() {
-    process.chdir(origCwd);
+  it('should increment the filename when it exists already', () => {
+    assert.equal(inc('bar.txt'), fixtures('bar copy.txt'));
+    assert.equal(inc('sub/foo.txt'), fixtures('sub/foo copy.txt'));
+    assert.equal(inc('sub/nested/foo.txt'), fixtures('sub/nested/foo copy 2.txt'));
   });
 
-  describe('main export', function() {
-    it('should export a function', function() {
-      assert.equal(typeof increment, 'function');
-    });
-
-    it('should expose a `.file` method', function() {
-      assert.equal(typeof increment.file, 'function');
-    });
-
-    it('should throw an error when invalid args are passed', function() {
-      assert.throws(function() {
-        increment();
-      });
-    });
+  it('should strip existing increments and raw numbers before updating increment', () => {
+    const opts = { strip: true, removeRawNumbers: true };
+    assert.equal(inc('foo.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo 2.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo copy.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('qux 2.txt', opts), fixtures('qux copy.txt'));
+    assert.equal(inc('abc (2) - Copy.txt', opts), fixtures('abc copy.txt'));
+    assert.equal(inc('abc (2) - Copy Copy.txt', opts), fixtures('abc copy.txt'));
+    assert.equal(inc('sub/nested/foo copy.txt', opts), fixtures('sub/nested/foo copy 2.txt'));
+    assert.equal(inc('sub/nested/foo copy 2.txt', opts), fixtures('sub/nested/foo copy 2.txt'));
   });
 
-  describe('increment', function() {
-    it('should not increment the filename when it does not exist', function() {
-      if (isWindows) return this.skip();
-      assert.equal(sameDir('baz.txt'), 'baz.txt');
-    });
-
-    it('should increment the filename', function() {
-      if (isWindows) return this.skip();
-      assert.equal(sameDir('bar.txt'), 'bar copy.txt');
-      assert.equal(sameDir('qux 2.txt'), 'qux 3.txt');
-      assert.equal(otherDir('bar.txt', 'sub/bar.txt'), 'sub/bar 2.txt');
-      assert.equal(otherDir('foo.txt', 'sub/foo.txt'), 'sub/foo 2.txt');
-      assert.equal(otherDir('foo.txt', 'sub/nested/foo.txt'), 'sub/nested/foo 2.txt');
-      assert.equal(otherDir('foo copy.txt', 'sub/nested/foo.txt'), 'sub/nested/foo 2.txt');
-      assert.equal(otherDir('foo 2.txt', 'sub/nested/foo.txt'), 'sub/nested/foo 2.txt');
-      assert.equal(otherDir('foo copy.txt', 'sub/nested/foo copy.txt'), 'sub/nested/foo 2.txt');
-      assert.equal(otherDir('foo copy.txt', 'sub/nested/bar copy.txt'), 'sub/nested/bar 2.txt');
-      assert.equal(otherDir('qux 2.txt', 'sub/nested/qux 2.txt'), 'sub/nested/qux 3.txt');
-    });
+  it('should strip existing increments before updating increment', () => {
+    const opts = { strip: true };
+    assert.equal(inc('foo.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo 2.txt', opts), fixtures('foo 2 copy.txt'));
+    assert.equal(inc('foo copy.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('qux 2.txt', opts), fixtures('qux 2 copy.txt'));
+    assert.equal(inc('abc (2) - Copy.txt', opts), fixtures('abc copy.txt'));
+    assert.equal(inc('abc (2) - Copy Copy.txt', opts), fixtures('abc copy.txt'));
+    assert.equal(inc('sub/nested/foo copy.txt', opts), fixtures('sub/nested/foo copy 2.txt'));
+    assert.equal(inc('sub/nested/foo copy 2.txt', opts), fixtures('sub/nested/foo copy 2.txt'));
   });
 
-  describe('options.stripIncrement', function() {
-    it('should add "copy" and increment the filename', function() {
-      if (isWindows) return this.skip();
-      var opts = { stripIncrement: false };
-      assert.equal(sameDir('foo.txt', opts), 'foo 3.txt');
-      assert.equal(sameDir('foo 2.txt', opts), 'foo 2 copy.txt');
-      assert.equal(sameDir('foo copy.txt', opts), 'foo copy 7.txt');
-    });
+  it('should start at the given number', () => {
+    // fixtures exist up to "6", so "7" is the lowest number we should see.
+    assert.equal(inc('foo.txt', { start: 1 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 2 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 3 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 4 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 5 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 6 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 7 }), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo.txt', { start: 8 }), fixtures('foo copy 8.txt'));
+    assert.equal(inc('foo.txt', { start: 101 }), fixtures('foo copy 101.txt'));
   });
 
-  describe('options.increment', function() {
-    it('should add "copy" and increment the filename', function() {
-      if (isWindows) return this.skip();
-      var opts = {
-        increment: function(stem, num) {
-          return stem.replace(/\s\d+$/, '') + ' copy ' + num;
-        }
-      };
+  it('should not strip increments when disabled', () => {
+    let opts = { strip: false };
+    assert.equal(inc('foo.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo 2.txt', opts), fixtures('foo 2 copy.txt'));
+    assert.equal(inc('foo copy.txt', opts), fixtures('foo copy copy.txt'));
+  });
 
-      assert.equal(sameDir('foo.txt', opts), 'foo copy 7.txt');
-      assert.equal(sameDir('foo 2.txt', opts), 'foo copy 7.txt');
-      assert.equal(sameDir('foo copy.txt', opts), 'foo copy 7.txt');
-    });
+  it('should use a custom function to increment the file name', () => {
+    let opts = {
+      increment(stem, n) {
+        return stem.replace(/(\s+copy\s*|\s\d+)$/, '') + ' copy ' + (n + 1);
+      }
+    };
+
+    assert.equal(inc('foo.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo 2.txt', opts), fixtures('foo copy 7.txt'));
+    assert.equal(inc('foo copy.txt', opts), fixtures('foo copy 7.txt'));
   });
 });

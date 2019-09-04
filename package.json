@@ -1,12 +1,12 @@
 {
-  "name": "increment-filename",
-  "description": "Detects if the filepath already exists on the file system and, if necessary, adds a number after the filename using the same pattern as the operating system.",
+  "name": "add-filename-increment",
+  "description": "Uses the same conventions as your OS to increment file names.",
   "version": "0.1.0",
-  "homepage": "https://github.com/jonschlinkert/increment-filename",
+  "homepage": "https://github.com/jonschlinkert/add-filename-increment",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": "jonschlinkert/increment-filename",
+  "repository": "jonschlinkert/add-filename-increment",
   "bugs": {
-    "url": "https://github.com/jonschlinkert/increment-filename/issues"
+    "url": "https://github.com/jonschlinkert/add-filename-increment/issues"
   },
   "license": "MIT",
   "files": [
@@ -14,23 +14,22 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "scripts": {
     "test": "mocha"
+  },
+  "dependencies": {
+    "strip-filename-increment": "^2.0.0"
+  },
+  "devDependencies": {
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^4.0.1"
   },
   "keywords": [
     "filename",
     "increment"
   ],
-  "devDependencies": {
-    "gulp-format-md": "^1.0.0",
-    "mocha": "^4.0.1"
-  },
-  "dependencies": {
-    "strip-filename-increment": "^1.0.0",
-    "vinyl": "^2.1.0"
-  },
   "verb": {
     "toc": false,
     "layout": "default",
@@ -40,6 +39,13 @@
     "plugins": [
       "gulp-format-md"
     ],
+    "related": {
+      "list": [
+        "micromatch",
+        "write",
+        "strip-filename-increment"
+      ]
+    },
     "lint": {
       "reflinks": true
     }
