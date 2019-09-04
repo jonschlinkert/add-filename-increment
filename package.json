@@ -1,7 +1,7 @@
 {
   "name": "add-filename-increment",
-  "description": "Uses the same conventions as your OS to increment file names.",
-  "version": "0.1.0",
+  "description": "When copying or moving files, it's common for operating systems to automatically add an increment or 'copy' to duplicate file names. This does that for Node.js applications, with automatic platform detection and support for Linux, MacOs, and Windows conventions.",
+  "version": "1.0.0",
   "homepage": "https://github.com/jonschlinkert/add-filename-increment",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/add-filename-increment",
@@ -20,11 +20,11 @@
     "test": "mocha"
   },
   "dependencies": {
-    "strip-filename-increment": "^2.0.0"
+    "strip-filename-increment": "^2.0.1"
   },
   "devDependencies": {
-    "gulp-format-md": "^1.0.0",
-    "mocha": "^4.0.1"
+    "gulp-format-md": "^2.0.0",
+    "mocha": "^6.2.0"
   },
   "keywords": [
     "filename",

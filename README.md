@@ -1,6 +1,6 @@
 # add-filename-increment [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W8YFZ425KND68) [![NPM version](https://img.shields.io/npm/v/add-filename-increment.svg?style=flat)](https://www.npmjs.com/package/add-filename-increment) [![NPM monthly downloads](https://img.shields.io/npm/dm/add-filename-increment.svg?style=flat)](https://npmjs.org/package/add-filename-increment) [![NPM total downloads](https://img.shields.io/npm/dt/add-filename-increment.svg?style=flat)](https://npmjs.org/package/add-filename-increment) [![Build Status](https://travis-ci.org/jonschlinkert/add-filename-increment.svg?branch=master)](https://travis-ci.org/jonschlinkert/add-filename-increment)
 
-> Uses the same conventions as your OS to increment file names.
+> When copying or moving files, it's common for operating systems to automatically add an increment or 'copy' to duplicate file names. This does that for Node.js applications, with automatic platform detection and support for Linux, MacOs, and Windows conventions.
 
 Please consider following this project's author, [Jon Schlinkert](https://github.com/jonschlinkert), and consider starring the project to show your :heart: and support.
 
