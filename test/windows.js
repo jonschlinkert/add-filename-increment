@@ -4,12 +4,13 @@ require('mocha');
 const path = require('path');
 const assert = require('assert').strict;
 const increment = require('..');
+const posix = str => str.replace(/\\/g, '/');
 
 const fixtures = (...args) => {
-  return path.join(__dirname, 'fixtures', ...args).replace(/\\/g, '/');
+  return posix(path.join(__dirname, 'fixtures', ...args));
 };
 const inc = (fp, opts) => {
-  return increment(fixtures(fp), { ...opts, fs: true, platform: 'windows' });
+  return posix(increment(fixtures(fp), { ...opts, fs: true, platform: 'windows' }));
 };
 
 describe('darwin', () => {
